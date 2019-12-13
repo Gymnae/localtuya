@@ -78,6 +78,7 @@ class TuyaCache:
         """Initialize the cache."""
         self._cached_status = ''
         self._cached_status_time = 0
+        self._cached_available = False
         self._device = device
         self._lock = Lock()
 
@@ -87,6 +88,7 @@ class TuyaCache:
                 status = self._device.status()
                 return status
             except ConnectionError:
+                self._cached_available = False
                 if i+1 == 3:
                     raise ConnectionError("Failed to update status.")
 
@@ -98,6 +100,7 @@ class TuyaCache:
             try:
                 return self._device.set_status(state, switchid)
             except ConnectionError:
+                self._cached_available = False
                 if i+1 == 5:
                     raise ConnectionError("Failed to set status.")
 
@@ -111,8 +114,13 @@ class TuyaCache:
                 self._cached_status = self.__get_status()
                 self._cached_status_time = time()
             return self._cached_status
+        except:
+            self._cached_available = False
         finally:
             self._lock.release()
+
+    def available(self):
+         return self._cached_available
 
 class TuyaDevice(SwitchDevice):
     """Representation of a Tuya switch."""
@@ -159,6 +167,11 @@ class TuyaDevice(SwitchDevice):
     def icon(self):
         """Return the icon."""
         return self._icon
+    
+    @property
+     def available(self):
+         """Return if available."""
+         return self._device.available()
 
     def turn_on(self, **kwargs):
         """Turn Tuya switch on."""
