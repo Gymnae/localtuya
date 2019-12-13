@@ -18,6 +18,9 @@ import homeassistant.helpers.config_validation as cv
 from time import time, sleep
 from threading import Lock
 
+import logging
+log = logging.getLogger(__name__)
+
 REQUIREMENTS = ['pytuya==7.0.4']
 
 CONF_DEVICE_ID = 'device_id'
@@ -91,7 +94,11 @@ class TuyaCache:
                 self._cached_available = False
                 if i+1 == 3:
                     raise ConnectionError("Failed to update status.")
-
+            except:
+                self._cached_available = False
+                log.debug('__get_status except')
+                raise
+ 
     def set_status(self, state, switchid):
         """Change the Tuya switch status and clear the cache."""
         self._cached_status = ''
@@ -103,6 +110,10 @@ class TuyaCache:
                 self._cached_available = False
                 if i+1 == 5:
                     raise ConnectionError("Failed to set status.")
+            except:
+                self._cached_available = False
+                log.debug('__get_status except')
+                raise
 
     def status(self):
         """Get state of Tuya switch and cache the results."""
@@ -113,14 +124,16 @@ class TuyaCache:
                 sleep(0.5)
                 self._cached_status = self.__get_status()
                 self._cached_status_time = time()
+                self._cached_available = True
             return self._cached_status
         except:
             self._cached_available = False
+            raise
         finally:
             self._lock.release()
 
     def available(self):
-         return self._cached_available
+        return self._cached_available
 
 class TuyaDevice(SwitchDevice):
     """Representation of a Tuya switch."""
@@ -134,8 +147,10 @@ class TuyaDevice(SwitchDevice):
         self._attr_current = attr_current
         self._attr_consumption = attr_consumption
         self._attr_voltage = attr_voltage
-        self._status = self._device.status()
-        self._state = self._status['dps'][self._switch_id]
+        #self._status = self._device.status()
+        self._status = None
+        #self._state = self._status['dps'][self._switch_id]
+        self._state = False
         print('Initialized tuya switch [{}] with switch status [{}] and state [{}]'.format(self._name, self._status, self._state))
 
     @property
@@ -169,9 +184,9 @@ class TuyaDevice(SwitchDevice):
         return self._icon
     
     @property
-     def available(self):
-         """Return if available."""
-         return self._device.available()
+    def available(self):
+        """Return if available."""
+        return self._device.available()
 
     def turn_on(self, **kwargs):
         """Turn Tuya switch on."""

@@ -4,8 +4,10 @@ This custom component uses the python-tuya fork that can talk with Tuya version 
 
 ## Key extraction
 
-https://github.com/clach04/python-tuya/wiki has background information for how to get device id and local key.
+- https://github.com/clach04/python-tuya/wiki has background information for how to get device id and local key.
 (the device id can be seen in Jinvoo Smart App, under "Device Info").
+
+- https://github.com/TuyaAPI/cli (tuya-cli list-app) have another technique using Tuya official app (works better on android)
 
 ### Instructions
 
