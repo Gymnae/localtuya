@@ -147,10 +147,11 @@ class TuyaDevice(SwitchDevice):
         self._attr_current = attr_current
         self._attr_consumption = attr_consumption
         self._attr_voltage = attr_voltage
-        #self._status = self._device.status()
         self._status = None
-        #self._state = self._status['dps'][self._switch_id]
         self._state = False
+        try:
+            self._status = self._device.status()
+            self._state = self._status['dps'][self._switch_id]
         print('Initialized tuya switch [{}] with switch status [{}] and state [{}]'.format(self._name, self._status, self._state))
 
     @property
