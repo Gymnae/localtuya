@@ -22,9 +22,10 @@ switch:
     name: tuya_01
     protocol_version: 3.3
 ```
-## Notes : 
+#### Notes : 
 
 if your switch doesn't work (log error : "decrypt data must be aligned to block boundary in ECB mode") try with the previous protocol_version: 3.1
+
 it's the case for switches NEO COOLCAM Wifi (https://www.szneo.com/en/products/show.php?id=229)
 
 ### Related Projects
