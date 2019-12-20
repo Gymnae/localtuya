@@ -91,13 +91,11 @@ class TuyaCache:
                 status = self._device.status()
                 return status
             except ConnectionError:
-                self._cached_available = False
+                #self._cached_available = False
                 if i+1 == 3:
+                    self._cached_available = False
+                    log.debug('__get_status failed')
                     raise ConnectionError("Failed to update status.")
-            except:
-                self._cached_available = False
-                log.debug('__get_status except')
-                raise
  
     def set_status(self, state, switchid):
         """Change the Tuya switch status and clear the cache."""
@@ -107,13 +105,11 @@ class TuyaCache:
             try:
                 return self._device.set_status(state, switchid)
             except ConnectionError:
-                self._cached_available = False
+                #self._cached_available = False
                 if i+1 == 5:
+                    self._cached_available = False
+                    log.debug('set_status failed')
                     raise ConnectionError("Failed to set status.")
-            except:
-                self._cached_available = False
-                log.debug('__get_status except')
-                raise
 
     def status(self):
         """Get state of Tuya switch and cache the results."""
@@ -149,9 +145,15 @@ class TuyaDevice(SwitchDevice):
         self._attr_voltage = attr_voltage
         self._status = None
         self._state = False
+        self._available = False
+        print('Initialized tuya switch [{}] '.format(self._name))
         try:
             self._status = self._device.status()
             self._state = self._status['dps'][self._switch_id]
+            self._available = True
+        except:
+            pass
+            
         print('Initialized tuya switch [{}] with switch status [{}] and state [{}]'.format(self._name, self._status, self._state))
 
     @property
@@ -174,6 +176,7 @@ class TuyaDevice(SwitchDevice):
             print('attrs[ATTR_CURRENT_CONSUMPTION]'.format(attrs[ATTR_CURRENT_CONSUMPTION]))
             attrs[ATTR_VOLTAGE] = "{}".format(self._status['dps'][self._attr_voltage]/10)
             print('attrs[ATTR_VOLTAGE]'.format(attrs[ATTR_VOLTAGE]))
+            self._available = True
 
         except KeyError:
             pass
@@ -187,7 +190,7 @@ class TuyaDevice(SwitchDevice):
     @property
     def available(self):
         """Return if available."""
-        return self._device.available()
+        return (self._device.available() and self._available)
 
     def turn_on(self, **kwargs):
         """Turn Tuya switch on."""
@@ -199,5 +202,11 @@ class TuyaDevice(SwitchDevice):
 
     def update(self):
         """Get state of Tuya switch."""
-        self._status = self._device.status()
-        self._state = self._status['dps'][self._switch_id]
+        try:
+            self._status = self._device.status()
+            self._state = self._status['dps'][self._switch_id]
+            self._available = True
+        except:
+            self._available = False
+            log.debug('update except')
+
