@@ -12,7 +12,7 @@ switch:
     protocol_version: 3.3
 """
 import voluptuous as vol
-from homeassistant.components.switch import SwitchDevice, PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchEntity, PLATFORM_SCHEMA
 from homeassistant.const import (CONF_HOST, CONF_ID, CONF_SWITCHES, CONF_FRIENDLY_NAME, CONF_ICON, CONF_NAME)
 import homeassistant.helpers.config_validation as cv
 from time import time, sleep
@@ -131,7 +131,7 @@ class TuyaCache:
     def available(self):
         return self._cached_available
 
-class TuyaDevice(SwitchDevice):
+class TuyaDevice(SwitchEntity):
     """Representation of a Tuya switch."""
 
     def __init__(self, device, name, icon, switchid, attr_current, attr_consumption, attr_voltage):
