@@ -25,7 +25,7 @@ from homeassistant.components.light import (
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR,
     SUPPORT_COLOR_TEMP,
-    Light,
+    LightEntity,
     PLATFORM_SCHEMA
 )
 from homeassistant.util import color as colorutil
@@ -187,7 +187,7 @@ class TuyaCache:
     def turn_off(self):
         self._device.turn_off()
 
-class TuyaDevice(Light):
+class TuyaDevice(LightEntity):
     """Representation of a Tuya switch."""
 
     def __init__(self, device, name, icon, bulbid):
