@@ -179,13 +179,13 @@ class TuyaCache:
             "Failed to set color temp after {} tries".format(UPDATE_RETRY_LIMIT))
 
     def state(self):
-        self._device.state();
+        self._device.state()
  
     def turn_on(self):
-        self._device.turn_on();
+        self._device.turn_on()
 
     def turn_off(self):
-        self._device.turn_off();
+        self._device.turn_off()
 
 class TuyaDevice(Light):
     """Representation of a Tuya switch."""

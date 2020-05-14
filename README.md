@@ -4,8 +4,10 @@ This custom component uses the python-tuya fork that can talk with Tuya version 
 
 ## Key extraction
 
-https://github.com/clach04/python-tuya/wiki has background information for how to get device id and local key.
+- https://github.com/clach04/python-tuya/wiki has background information for how to get device id and local key.
 (the device id can be seen in Jinvoo Smart App, under "Device Info").
+
+- https://github.com/TuyaAPI/cli (tuya-cli list-app) have another technique using Tuya official app (works better on android)
 
 ### Instructions
 
@@ -22,6 +24,11 @@ switch:
     name: tuya_01
     protocol_version: 3.3
 ```
+#### Notes : 
+
+if your switch doesn't work (log error : "decrypt data must be aligned to block boundary in ECB mode") try with the previous protocol_version: 3.1
+
+it's the case for switches NEO COOLCAM Wifi (https://www.szneo.com/en/products/show.php?id=229)
 
 ### Related Projects
 
