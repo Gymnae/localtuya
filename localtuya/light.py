@@ -32,7 +32,7 @@ from homeassistant.util import color as colorutil
 import socket
 
 REQUIREMENTS = ['pytuya==7.0.4']
-
+CONF_ID = 'dps_id'
 CONF_DEVICE_ID = 'device_id'
 CONF_LOCAL_KEY = 'local_key'
 CONF_PROTOCOL_VERSION = 'protocol_version'
